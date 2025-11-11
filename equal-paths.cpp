@@ -29,6 +29,7 @@ bool dfs_depth(Node * root, int depth, int& path_depth){
         if(path_depth == depth){
             return true; 
         }
+        return false;
     }
 
     depth++;
