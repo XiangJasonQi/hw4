@@ -249,7 +249,7 @@ protected:
     virtual void nodeSwap( Node<Key,Value>* n1, Node<Key,Value>* n2) ;
 
     // Add helper functions here
-    void  BinarySearchTree<Key, Value>::helper_clear(Node<Key, Value>* current);
+    void  helper_clear(Node<Key, Value>* current);
     int helper_balanced(Node<Key, Value> *current) const;
     Node<Key, Value>* traverse_helper(Node<Key, Value>* curr, const std::pair<const Key, Value> &keyValuePair);
     static Node<Key, Value>* traverse_helper_pred(Node<Key, Value>* current, Node<Key, Value>* parent, int classifer);
@@ -259,7 +259,6 @@ protected:
 
 protected:
     Node<Key, Value>* root_;
-    AVLNode<Key, Value> *traverse_remove(const Key &key, AVLNode<Key, Value> *current) const;
     // You should not need other data members
 };
 
@@ -319,7 +318,7 @@ bool
 BinarySearchTree<Key, Value>::iterator::operator==(
     const BinarySearchTree<Key, Value>::iterator& rhs) const
 {
-    if(current_ == rhs->current_){
+    if(current_ == rhs.current_){
         return true; 
     } else{
         return false; 
@@ -336,7 +335,7 @@ BinarySearchTree<Key, Value>::iterator::operator!=(
     const BinarySearchTree<Key, Value>::iterator& rhs) const
 {
     // TODO
-    if(current_ != rhs->current_){
+    if(current_ != rhs.current_){
         return true;
     } else{
         return false;
@@ -358,9 +357,11 @@ BinarySearchTree<Key, Value>::iterator::operator++()
     }
     if(current_->getRight() != nullptr){
         //need to put getleft in the argument!!!
-        return traverse_helper_succ(current_->getRight(), current_, 1);
+        current_ = traverse_helper_succ(current_->getRight(), current_, 1);
+        return *this;
     } else {
-        return traverse_helper_succ(current_, current_->getParent(), 2);
+        current_ = traverse_helper_succ(current_, current_->getParent(), 2);
+        return *this;
     }
 
 }
@@ -369,6 +370,9 @@ template<class Key, class Value>
 Node<Key, Value>* 
 BinarySearchTree<Key, Value>::traverse_helper_succ(Node<Key, Value>* current, Node<Key, Value>* parent, int classifer){
     if(classifer == 1){
+        if(current == nullptr){
+            return nullptr;
+        }
         if(current->getLeft() == nullptr){
             return current;
         } else{
@@ -522,7 +526,7 @@ Node<Key, Value>* BinarySearchTree<Key, Value>::traverse_helper(Node<Key, Value>
         return curr;
     }
 
-    if(curr->getKey == keyValuePair.first){
+    if(curr->getKey() == keyValuePair.first){
         return curr;
     }
 
@@ -663,6 +667,7 @@ BinarySearchTree<Key, Value>::traverse_helper_pred(Node<Key, Value>* current, No
         }
         return traverse_helper_pred(parent, parent->getParent(), 2);
     }
+    return nullptr;
 }
 
 
